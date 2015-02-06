@@ -10,4 +10,19 @@
 
 @implementation galleryCell
 
+@synthesize cellContent = _cellContent;
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+    }
+    return self;
+}
+
+//- (void)prepareForReuse
+//{
+//    self.selected = NO;
+//}
 @end

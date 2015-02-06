@@ -14,6 +14,26 @@
 		8256AEF91A83FEE500D38F3A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8256AEF81A83FEE500D38F3A /* Images.xcassets */; };
 		8256AEFC1A83FEE500D38F3A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8256AEFA1A83FEE500D38F3A /* LaunchScreen.xib */; };
 		8256AF081A83FEE500D38F3A /* shareGalleryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8256AF071A83FEE500D38F3A /* shareGalleryTests.m */; };
+		8256AF131A840EB400D38F3A /* galleryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8256AF121A840EB400D38F3A /* galleryCell.m */; };
+		826CB9521A8543FC008C2494 /* ebZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 826CB9481A8543FC008C2494 /* ebZoomingScrollView.m */; };
+		826CB9531A8543FC008C2494 /* embDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 826CB94A1A8543FC008C2494 /* embDataViewController.m */; };
+		826CB9541A8543FC008C2494 /* embModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 826CB94C1A8543FC008C2494 /* embModelController.m */; };
+		826CB9551A8543FC008C2494 /* FGalleryPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 826CB94E1A8543FC008C2494 /* FGalleryPhotoView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		826CB9561A8543FC008C2494 /* photoData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 826CB94F1A8543FC008C2494 /* photoData.plist */; };
+		826CB9571A8543FC008C2494 /* XHGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 826CB9511A8543FC008C2494 /* XHGalleryViewController.m */; };
+		8280F8821A854D70007AA069 /* Lobby Entry and Restuarant.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F8781A854D70007AA069 /* Lobby Entry and Restuarant.jpg */; };
+		8280F8831A854D70007AA069 /* Lobby View.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F8791A854D70007AA069 /* Lobby View.jpg */; };
+		8280F8841A854D70007AA069 /* Southeast View of Victory Center.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F87A1A854D70007AA069 /* Southeast View of Victory Center.jpg */; };
+		8280F8851A854D70007AA069 /* Soutwest View of Victory Center.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F87B1A854D70007AA069 /* Soutwest View of Victory Center.jpg */; };
+		8280F8861A854D70007AA069 /* Victory Center 02 W Hotel View.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F87C1A854D70007AA069 /* Victory Center 02 W Hotel View.jpg */; };
+		8280F8871A854D70007AA069 /* Victory Center_Highway View.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F87D1A854D70007AA069 /* Victory Center_Highway View.jpg */; };
+		8280F8881A854D70007AA069 /* Victory Center_Street View-1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F87E1A854D70007AA069 /* Victory Center_Street View-1.jpg */; };
+		8280F8891A854D70007AA069 /* View 04.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F87F1A854D70007AA069 /* View 04.jpg */; };
+		8280F88A1A854D70007AA069 /* View of Victory Center and Dart Transit System.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8280F8801A854D70007AA069 /* View of Victory Center and Dart Transit System.jpg */; };
+		8280F88B1A854D70007AA069 /* play_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8280F8811A854D70007AA069 /* play_icon.png */; };
+		8280F8931A855469007AA069 /* embEmailData.m in Sources */ = {isa = PBXBuildFile; fileRef = 8280F88E1A855469007AA069 /* embEmailData.m */; };
+		8280F8941A855469007AA069 /* TLSpringFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8280F8901A855469007AA069 /* TLSpringFlowLayout.m */; };
+		8280F8951A855469007AA069 /* UIImage+ScaleToFit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8280F8921A855469007AA069 /* UIImage+ScaleToFit.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +60,35 @@
 		8256AF011A83FEE500D38F3A /* shareGalleryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = shareGalleryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8256AF061A83FEE500D38F3A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8256AF071A83FEE500D38F3A /* shareGalleryTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = shareGalleryTests.m; sourceTree = "<group>"; };
+		8256AF111A840EB400D38F3A /* galleryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = galleryCell.h; sourceTree = "<group>"; };
+		8256AF121A840EB400D38F3A /* galleryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = galleryCell.m; sourceTree = "<group>"; };
+		826CB9471A8543FC008C2494 /* ebZoomingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ebZoomingScrollView.h; sourceTree = "<group>"; };
+		826CB9481A8543FC008C2494 /* ebZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ebZoomingScrollView.m; sourceTree = "<group>"; };
+		826CB9491A8543FC008C2494 /* embDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embDataViewController.h; sourceTree = "<group>"; };
+		826CB94A1A8543FC008C2494 /* embDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = embDataViewController.m; sourceTree = "<group>"; };
+		826CB94B1A8543FC008C2494 /* embModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embModelController.h; sourceTree = "<group>"; };
+		826CB94C1A8543FC008C2494 /* embModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = embModelController.m; sourceTree = "<group>"; };
+		826CB94D1A8543FC008C2494 /* FGalleryPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FGalleryPhotoView.h; sourceTree = "<group>"; };
+		826CB94E1A8543FC008C2494 /* FGalleryPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FGalleryPhotoView.m; sourceTree = "<group>"; };
+		826CB94F1A8543FC008C2494 /* photoData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = photoData.plist; sourceTree = "<group>"; };
+		826CB9501A8543FC008C2494 /* XHGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHGalleryViewController.h; sourceTree = "<group>"; };
+		826CB9511A8543FC008C2494 /* XHGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHGalleryViewController.m; sourceTree = "<group>"; };
+		8280F8781A854D70007AA069 /* Lobby Entry and Restuarant.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Lobby Entry and Restuarant.jpg"; sourceTree = "<group>"; };
+		8280F8791A854D70007AA069 /* Lobby View.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Lobby View.jpg"; sourceTree = "<group>"; };
+		8280F87A1A854D70007AA069 /* Southeast View of Victory Center.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Southeast View of Victory Center.jpg"; sourceTree = "<group>"; };
+		8280F87B1A854D70007AA069 /* Soutwest View of Victory Center.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Soutwest View of Victory Center.jpg"; sourceTree = "<group>"; };
+		8280F87C1A854D70007AA069 /* Victory Center 02 W Hotel View.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Victory Center 02 W Hotel View.jpg"; sourceTree = "<group>"; };
+		8280F87D1A854D70007AA069 /* Victory Center_Highway View.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Victory Center_Highway View.jpg"; sourceTree = "<group>"; };
+		8280F87E1A854D70007AA069 /* Victory Center_Street View-1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Victory Center_Street View-1.jpg"; sourceTree = "<group>"; };
+		8280F87F1A854D70007AA069 /* View 04.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "View 04.jpg"; sourceTree = "<group>"; };
+		8280F8801A854D70007AA069 /* View of Victory Center and Dart Transit System.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "View of Victory Center and Dart Transit System.jpg"; sourceTree = "<group>"; };
+		8280F8811A854D70007AA069 /* play_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play_icon.png; sourceTree = "<group>"; };
+		8280F88D1A855469007AA069 /* embEmailData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = embEmailData.h; sourceTree = "<group>"; };
+		8280F88E1A855469007AA069 /* embEmailData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = embEmailData.m; sourceTree = "<group>"; };
+		8280F88F1A855469007AA069 /* TLSpringFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TLSpringFlowLayout.h; sourceTree = "<group>"; };
+		8280F8901A855469007AA069 /* TLSpringFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TLSpringFlowLayout.m; sourceTree = "<group>"; };
+		8280F8911A855469007AA069 /* UIImage+ScaleToFit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ScaleToFit.h"; sourceTree = "<group>"; };
+		8280F8921A855469007AA069 /* UIImage+ScaleToFit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ScaleToFit.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +134,10 @@
 				8256AEF01A83FEE500D38F3A /* AppDelegate.m */,
 				8256AEF21A83FEE500D38F3A /* ViewController.h */,
 				8256AEF31A83FEE500D38F3A /* ViewController.m */,
+				8256AF111A840EB400D38F3A /* galleryCell.h */,
+				8256AF121A840EB400D38F3A /* galleryCell.m */,
+				826CB9461A8543FC008C2494 /* XHGallery */,
+				8280F88C1A855469007AA069 /* utilities_sharepanel */,
 				8256AEF51A83FEE500D38F3A /* Main.storyboard */,
 				8256AEF81A83FEE500D38F3A /* Images.xcassets */,
 				8256AEFA1A83FEE500D38F3A /* LaunchScreen.xib */,
@@ -117,6 +170,55 @@
 				8256AF061A83FEE500D38F3A /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		826CB9461A8543FC008C2494 /* XHGallery */ = {
+			isa = PBXGroup;
+			children = (
+				826CB9471A8543FC008C2494 /* ebZoomingScrollView.h */,
+				826CB9481A8543FC008C2494 /* ebZoomingScrollView.m */,
+				826CB9491A8543FC008C2494 /* embDataViewController.h */,
+				826CB94A1A8543FC008C2494 /* embDataViewController.m */,
+				826CB94B1A8543FC008C2494 /* embModelController.h */,
+				826CB94C1A8543FC008C2494 /* embModelController.m */,
+				826CB94D1A8543FC008C2494 /* FGalleryPhotoView.h */,
+				826CB94E1A8543FC008C2494 /* FGalleryPhotoView.m */,
+				826CB9501A8543FC008C2494 /* XHGalleryViewController.h */,
+				826CB9511A8543FC008C2494 /* XHGalleryViewController.m */,
+				826CB94F1A8543FC008C2494 /* photoData.plist */,
+				8280F8811A854D70007AA069 /* play_icon.png */,
+				8280F8771A854D70007AA069 /* photo */,
+			);
+			path = XHGallery;
+			sourceTree = "<group>";
+		};
+		8280F8771A854D70007AA069 /* photo */ = {
+			isa = PBXGroup;
+			children = (
+				8280F8781A854D70007AA069 /* Lobby Entry and Restuarant.jpg */,
+				8280F8791A854D70007AA069 /* Lobby View.jpg */,
+				8280F87A1A854D70007AA069 /* Southeast View of Victory Center.jpg */,
+				8280F87B1A854D70007AA069 /* Soutwest View of Victory Center.jpg */,
+				8280F87C1A854D70007AA069 /* Victory Center 02 W Hotel View.jpg */,
+				8280F87D1A854D70007AA069 /* Victory Center_Highway View.jpg */,
+				8280F87E1A854D70007AA069 /* Victory Center_Street View-1.jpg */,
+				8280F87F1A854D70007AA069 /* View 04.jpg */,
+				8280F8801A854D70007AA069 /* View of Victory Center and Dart Transit System.jpg */,
+			);
+			path = photo;
+			sourceTree = "<group>";
+		};
+		8280F88C1A855469007AA069 /* utilities_sharepanel */ = {
+			isa = PBXGroup;
+			children = (
+				8280F88D1A855469007AA069 /* embEmailData.h */,
+				8280F88E1A855469007AA069 /* embEmailData.m */,
+				8280F88F1A855469007AA069 /* TLSpringFlowLayout.h */,
+				8280F8901A855469007AA069 /* TLSpringFlowLayout.m */,
+				8280F8911A855469007AA069 /* UIImage+ScaleToFit.h */,
+				8280F8921A855469007AA069 /* UIImage+ScaleToFit.m */,
+			);
+			path = utilities_sharepanel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,9 +301,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8280F8831A854D70007AA069 /* Lobby View.jpg in Resources */,
+				8280F8851A854D70007AA069 /* Soutwest View of Victory Center.jpg in Resources */,
+				8280F8841A854D70007AA069 /* Southeast View of Victory Center.jpg in Resources */,
 				8256AEF71A83FEE500D38F3A /* Main.storyboard in Resources */,
+				8280F88A1A854D70007AA069 /* View of Victory Center and Dart Transit System.jpg in Resources */,
+				8280F8821A854D70007AA069 /* Lobby Entry and Restuarant.jpg in Resources */,
+				8280F8891A854D70007AA069 /* View 04.jpg in Resources */,
+				826CB9561A8543FC008C2494 /* photoData.plist in Resources */,
+				8280F88B1A854D70007AA069 /* play_icon.png in Resources */,
+				8280F8871A854D70007AA069 /* Victory Center_Highway View.jpg in Resources */,
 				8256AEFC1A83FEE500D38F3A /* LaunchScreen.xib in Resources */,
 				8256AEF91A83FEE500D38F3A /* Images.xcassets in Resources */,
+				8280F8881A854D70007AA069 /* Victory Center_Street View-1.jpg in Resources */,
+				8280F8861A854D70007AA069 /* Victory Center 02 W Hotel View.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,9 +332,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8280F8941A855469007AA069 /* TLSpringFlowLayout.m in Sources */,
+				8280F8951A855469007AA069 /* UIImage+ScaleToFit.m in Sources */,
+				826CB9521A8543FC008C2494 /* ebZoomingScrollView.m in Sources */,
+				826CB9551A8543FC008C2494 /* FGalleryPhotoView.m in Sources */,
+				826CB9531A8543FC008C2494 /* embDataViewController.m in Sources */,
+				8256AF131A840EB400D38F3A /* galleryCell.m in Sources */,
+				826CB9541A8543FC008C2494 /* embModelController.m in Sources */,
+				826CB9571A8543FC008C2494 /* XHGalleryViewController.m in Sources */,
 				8256AEF41A83FEE500D38F3A /* ViewController.m in Sources */,
 				8256AEF11A83FEE500D38F3A /* AppDelegate.m in Sources */,
 				8256AEEE1A83FEE500D38F3A /* main.m in Sources */,
+				8280F8931A855469007AA069 /* embEmailData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +536,7 @@
 				8256AF0D1A83FEE500D38F3A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8256AF0E1A83FEE500D38F3A /* Build configuration list for PBXNativeTarget "shareGalleryTests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +545,7 @@
 				8256AF101A83FEE500D38F3A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -10,4 +10,6 @@
 
 @interface galleryCell : UICollectionViewCell
 
+@property (weak, nonatomic) IBOutlet UILabel *cellContent;
+
 @end

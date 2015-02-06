@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<array>
+		<dict>
+			<key>caption</key>
+			<string>Caption 1</string>
+			<key>file</key>
+			<string>Lobby Entry and Restuarant.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 2</string>
+			<key>file</key>
+			<string>Lobby View.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 3</string>
+			<key>file</key>
+			<string>Southeast View of Victory Center.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 4</string>
+			<key>file</key>
+			<string>Soutwest View of Victory Center.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 5</string>
+			<key>file</key>
+			<string>Victory Center 02 W Hotel View.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 6</string>
+			<key>file</key>
+			<string>Victory Center_Highway View.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 7</string>
+			<key>file</key>
+			<string>Victory Center_Street View-1.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 8</string>
+			<key>file</key>
+			<string>View 04.jpg</string>
+			<key>type</key>
+			<string>image</string>
+		</dict>
+		<dict>
+			<key>caption</key>
+			<string>Caption 9</string>
+			<key>file</key>
+			<string>View of Victory Center and Dart Transit System.jpg</string>
+			<key>type</key>
+			<string>movie</string>
+		</dict>
+	</array>
+</array>
+</plist>
