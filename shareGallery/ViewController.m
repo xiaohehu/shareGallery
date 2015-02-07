@@ -73,30 +73,6 @@
     [self.view addSubview: uiv_shareControlContainer];
     uiv_shareControlContainer.transform = CGAffineTransformMakeTranslation(0.0, uiv_shareControlContainer.frame.size.height);
     
-//    // Size contstraints
-//    NSArray *control_constraint_H = [NSLayoutConstraint
-//                                     constraintsWithVisualFormat:@"V:[uiv_shareControlContainer(100)]"
-//                                     options:0
-//                                     metrics:nil
-//                                     views:NSDictionaryOfVariableBindings(uiv_shareControlContainer)];
-//    
-//    NSArray *control_constraint_V = [NSLayoutConstraint
-//                                     constraintsWithVisualFormat:@"H:|[uiv_shareControlContainer]|"
-//                                     options:0
-//                                     metrics:nil
-//                                     views:NSDictionaryOfVariableBindings(uiv_shareControlContainer)];
-//    [self.view addConstraints: control_constraint_H];
-//    [self.view addConstraints: control_constraint_V];
-//
-//    // Position constraints
-//    NSArray *constraints = [NSLayoutConstraint
-//                            constraintsWithVisualFormat:@"V:[uiv_shareControlContainer]-offsetBtm-|"
-//                            options:0
-//                            metrics:@{@"offsetBtm": @0}
-//                            views:NSDictionaryOfVariableBindings(uiv_shareControlContainer)];
-//    
-//    [self.view addConstraints: constraints];
-    
     [self createControlBtns];
 }
 
@@ -221,7 +197,7 @@
         NSString *theNum = [arr_data objectAtIndex:indexPath.item];
         // Add the selected item to the array
         [arr_selectedCells addObject: theNum];
-//        NSLog(@"\n\n %@", arr_selectedCells);
+        NSLog(@"\n\n %@", arr_selectedCells);
     }
     else
     {
@@ -341,6 +317,11 @@
 
 -(void)emailData
 {
+    if (arr_selectedCells.count > 0) {
+        NSLog(@"\n\n Load blank email!");
+        return;
+    }
+    
     embEmailData *emailData = [[embEmailData alloc] init];
     emailData.optionsAlert=NO;
     
