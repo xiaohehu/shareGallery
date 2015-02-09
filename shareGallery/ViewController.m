@@ -19,7 +19,7 @@
     NSMutableArray      *arr_data;
     NSMutableArray      *arr_selectedCells;
     BOOL                enabledShare;
-    
+    MFMailComposeViewController *picker;
     UIView              *uiv_shareControlContainer;
 }
 @property (nonatomic, strong)   XHGalleryViewController *gallery;
@@ -36,6 +36,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    picker = [[MFMailComposeViewController alloc] init];
     
     [self initData];
     
@@ -127,6 +129,7 @@
 {
     NSString *url = [[NSBundle mainBundle] pathForResource:@"photoData" ofType:@"plist"];
     arr_rawData = [[NSArray alloc] initWithContentsOfFile:url];
+    NSLog(@"the photos are %@", arr_rawData);
 }
 
 /*
@@ -194,7 +197,8 @@
 {
     if (enabledShare) {
         // Get the selected string
-        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
+//        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
+        NSString *theNum = @"Lobby View.jpg";
         // Add the selected item to the array
         [arr_selectedCells addObject: theNum];
         NSLog(@"\n\n %@", arr_selectedCells);
@@ -317,17 +321,18 @@
 
 -(void)emailData
 {
-    if (arr_selectedCells.count > 0) {
-        NSLog(@"\n\n Load blank email!");
-        return;
-    }
+//    if (arr_selectedCells.count > 0) {
+//        NSLog(@"\n\n Load blank email!");
+//        return;
+//    }
     
     embEmailData *emailData = [[embEmailData alloc] init];
+    emailData.attachment = arr_selectedCells;
     emailData.optionsAlert=NO;
     
     if ([MFMailComposeViewController canSendMail] == YES) {
         
-        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+//        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
         picker.mailComposeDelegate = self; // &lt;- very important step if you want feedbacks on what the user did with your email sheet
         
         if(emailData.to)
@@ -405,19 +410,26 @@
                     }
                     
                     newname = file;
+                    NSLog(@"The file's name is \n%@", newname);
                     [picker addAttachmentData:myData mimeType:mimeType fileName:newname];
                 }
             }
         }
         
         picker.navigationBar.barStyle = UIBarStyleBlack; // choose your style, unfortunately, Translucent colors behave quirky.
-        [self presentViewController:picker animated:YES completion:nil];
+//        [self presentViewController:picker animated:YES completion:nil];
+        [self performSelector:@selector(presentMailViewController) withObject:nil afterDelay:0.5];
         
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Status" message:[NSString stringWithFormat:@"Email needs to be configured before this device can send email. \n\n Use support@neoscape.com on a device capable of sending email."]
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }
+}
+
+- (void)presentMailViewController
+{
+    [self presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
