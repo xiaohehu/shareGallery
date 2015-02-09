@@ -46,7 +46,6 @@
     _collectionView.dataSource = self;
     _collectionView.backgroundColor = [UIColor redColor];
     [_collectionView reloadData];
-    [self initShareControlPanel];
 
     [self prepareGalleryData];
 }
@@ -54,6 +53,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     viewFrame = self.view.bounds;
+    [self initShareControlPanel];
 }
 
 - (void)initData
