@@ -12,6 +12,7 @@
 #import "embEmailData.h"
 #import <MessageUI/MessageUI.h>
 #import "SmallAlbumCollectionViewController.h"
+#import "UIImage+ScaleToFit.h"
 
 @interface ViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, XHGalleryDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate, UIPopoverControllerDelegate>
 {
@@ -22,6 +23,9 @@
     BOOL                enabledShare;
     MFMailComposeViewController *picker;
     UIView              *uiv_shareControlContainer;
+    
+    CGSize				_pageSize;
+    NSMutableArray		*filesInPDF;
 }
 @property (nonatomic, strong)   XHGalleryViewController             *gallery;
 @property (weak, nonatomic) IBOutlet UICollectionView               *collectionView;
@@ -41,6 +45,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     picker = [[MFMailComposeViewController alloc] init];
+    filesInPDF = [[NSMutableArray alloc] init];
     
     [self initData];
     
@@ -66,8 +71,6 @@
         [arr_data addObject: [NSString stringWithFormat:@"%i", i]];
     }
     arr_selectedCells = [NSMutableArray array];
-    
-//    NSLog(@"%@", arr_data);
 }
 
 - (void)initShareControlPanel
@@ -106,6 +109,7 @@
     uib_pdf.backgroundColor = [UIColor whiteColor];
     [uib_pdf setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [uiv_shareControlContainer addSubview: uib_pdf];
+    [uib_pdf addTarget:self action:@selector(createPdfAttachment:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)tapDoneBtn:(id)sender
@@ -243,7 +247,6 @@
         // Remove the selected item to the array
         [arr_selectedCells removeObject: theNum];
     }
-    
 }
 
 #pragma mark PopOver Delegate
@@ -258,109 +261,14 @@
     _smallAlbum = nil;
 }
 
-#pragma mark Email Selected Array after formatting
--(IBAction)finishedSelectingItemsForEmail:(id)sender
-{
-//    UIButton*selectedBtn = (UIButton*)sender;
-//    BOOL isPDF;
-//    
-//    if (selectedBtn.tag == 110) {
-//        isPDF = YES;
-//    } else{
-//        isPDF = NO;
-//    }
-//    
-//    NSLog(@"Finished Selecting");
-//    
-//    selectedArray = [[selectedIndexPaths valueForKey:@"fileName"] mutableCopy];
-//    
-//    NSString	*justFileName;
-//    NSString	*webLinkBody;
-//    NSArray		*attachmentData;
-//    
-//    // web text, if any
-//    NSMutableString *formattedWeb = [self formatWebLinks];
-//    
-//    if ([_uitf_name.text length] == 0) {
-//        greetingName = [NSString stringWithFormat:@"."];
-//    } else {
-//        greetingName = [NSString stringWithFormat:@", %@", _uitf_name.text];
-//    }
-//    
-//    webLinkBody = [NSString stringWithFormat:@"Thank you for visiting our Sales Center%@<br /><br />%@", greetingName,formattedWeb];
-//    
-//    if (isPDF) {
-//        // inserted cover page to array
-//        justFileName = @"Brochure_Cover_Page_01";
-//        [selectedArray insertObject:justFileName atIndex:0];
-//        
-//        // pdf creation
-//        [self setupPDFDocumentNamed:@"Demo" Width:1100 Height:850];
-//        
-//        // remove any other pdfs temporarily
-//        NSMutableArray *tempRemovePDFS = [NSMutableArray array];
-//        for (id file in selectedArray) {
-//            if ([[file pathExtension] isEqualToString:@"pdf"]) {
-//                [tempRemovePDFS addObject:file];
-//                NSLog(@"removed: %@", file);
-//            }
-//        }
-//        [selectedArray removeObjectsInArray:tempRemovePDFS];
-//        
-//        // pdf data
-//        [self addDataToPDF:selectedArray];
-//        
-//        // close & save pdf
-//        [self finishAndSavePDF];
-//        
-//        // get newly saved pdf from documents directory and send
-//        NSData *pdfData = [self getPDFAsNSDataNamed:@"Demo.pdf"];
-//        NSMutableArray*attachData = [[NSMutableArray alloc] initWithObjects:pdfData, nil];
-//        
-//        // remove anything already added to the created pdf
-//        // remove cover image
-//        [selectedArray removeObjectAtIndex:0];
-//        
-//        // remove any other images from array
-//        NSMutableArray *tooDelete = [NSMutableArray array];
-//        for (id file in selectedArray) {
-//            if ([[file pathExtension] isEqualToString:@"jpg"]) {
-//                [tooDelete addObject:file];
-//                NSLog(@"removed: %@", file);
-//            }
-//        }
-//        
-//        [selectedArray removeObjectsInArray:tooDelete];
-//        
-//        // add BACK in any added pdfs
-//        [attachData addObjectsFromArray:tempRemovePDFS];
-//        
-//        // prepare final array to send to email,
-//        [attachData addObjectsFromArray:selectedArray];
-//        attachmentData = [NSArray arrayWithArray:attachData];
-//        
-//    } else {
-//        attachmentData = selectedArray;
-//    }
-//    
-//    [self dismissViewControllerAnimated:YES completion:^{
-//        embEmailData *emailData = [[embEmailData alloc] init];
-//        //emailData.to = @[@"evan.buxton@neoscape.com"];
-//        emailData.subject = @"Skanska 101 Seaport Marketing Package";
-//        emailData.body = webLinkBody;
-//        emailData.attachment = attachmentData;
-//        emailData.optionsAlert=NO;
-//        [self dismissVC:nil];
-//    }];
-    
-}
+#pragma mark - Generate email
 
 -(void)emailData
 {
-//    if (arr_selectedCells.count > 0) {
-//        NSLog(@"\n\n Load blank email!");
-//        return;
-//    }
+    if (arr_selectedCells.count == 0) {
+        NSLog(@"\n\n Load blank email!");
+        return;
+    }
     
     embEmailData *emailData = [[embEmailData alloc] init];
     emailData.attachment = arr_selectedCells;
@@ -453,7 +361,6 @@
         }
         
         picker.navigationBar.barStyle = UIBarStyleBlack; // choose your style, unfortunately, Translucent colors behave quirky.
-//        [self presentViewController:picker animated:YES completion:nil];
         [self performSelector:@selector(presentMailViewController) withObject:nil afterDelay:0.5];
         
     } else {
@@ -503,7 +410,292 @@
     NSLog(@"FINISHED");
 }
 
+- (void)createPdfAttachment:(id)sender
+{
+    // pdf creation
+    [self setupPDFDocumentNamed:@"Demo" Width:1100 Height:850];
+    
+    // remove any other pdfs temporarily
+    NSMutableArray *tempRemovePDFS = [NSMutableArray array];
+    for (id file in arr_selectedCells) {
+        if ([[file pathExtension] isEqualToString:@"pdf"]) {
+            [tempRemovePDFS addObject:file];
+            NSLog(@"removed: %@", file);
+        }
+    }
+    [arr_selectedCells removeObjectsInArray:tempRemovePDFS];
+    
+    // pdf data
+    [self addDataToPDF:arr_selectedCells];
+    
+    // close & save pdf
+    [self finishAndSavePDF];
+    
+    // get newly saved pdf from documents directory and send
+    NSData *pdfData = [self getPDFAsNSDataNamed:@"Demo.pdf"];
+    NSMutableArray*attachData = [[NSMutableArray alloc] initWithObjects:pdfData, nil];
+    
+    // remove anything already added to the created pdf
+    // remove cover image
+    [arr_selectedCells removeObjectAtIndex:0];
+    
+    // remove any other images from array
+    NSMutableArray *tooDelete = [NSMutableArray array];
+    for (id file in arr_selectedCells) {
+        if ([[file pathExtension] isEqualToString:@"jpg"]) {
+            [tooDelete addObject:file];
+            NSLog(@"removed: %@", file);
+        }
+    }
+    
+    [arr_selectedCells removeObjectsInArray:tooDelete];
+    
+    // add BACK in any added pdfs
+    [attachData addObjectsFromArray:tempRemovePDFS];
+    
+    // prepare final array to send to email,
+    NSArray *attachmentData;
+    [attachData addObjectsFromArray:arr_selectedCells];
+    attachmentData = [NSArray arrayWithArray:attachData];
+    embEmailData *emailData = [[embEmailData alloc] init];
+    emailData.attachment = attachmentData;
+    emailData.optionsAlert=NO;
+    
+    if ([MFMailComposeViewController canSendMail] == YES) {
+        
+        //        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+        picker.mailComposeDelegate = self; // &lt;- very important step if you want feedbacks on what the user did with your email sheet
+        
+        if(emailData.to)
+            [picker setToRecipients:emailData.to];
+        
+        if(emailData.cc)
+            [picker setCcRecipients:emailData.cc];
+        
+        if(emailData.bcc)
+            [picker setBccRecipients:emailData.bcc];
+        
+        if(emailData.subject)
+            [picker setSubject:emailData.subject];
+        
+        if(emailData.body)
+            [picker setMessageBody:emailData.body isHTML:YES]; // depends. Mostly YES, unless you want to send it as plain text (boring)
+        
+        NSData		*myData;
+        NSString	*newname;
+        
+        for (id file in emailData.attachment) {
+            if ([file isKindOfClass:[NSData class]]) {
+                NSLog(@"pdf");
+                myData = [NSData dataWithData:file];
+                NSString *mimeType;
+                mimeType = @"application/pdf";
+                newname = @"Brochure.pdf";
+                [picker addAttachmentData:myData mimeType:mimeType fileName:newname];
+                
+                // it must be another file type?
+            }
+        }
+        
+        [self performSelector:@selector(presentMailViewController) withObject:nil afterDelay:0.5];
+    }
+}
 
+#pragma mark - pdf creation
+-(NSData*)getPDFAsNSDataNamed:(NSString*)name
+{
+    // find new pdf and add to mydata for emailing
+    NSString *searchFilename = name; // name of the PDF you are searching for
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSDirectoryEnumerator *direnum = [[NSFileManager defaultManager] enumeratorAtPath:documentsDirectory];
+    NSString *documentsSubpath;
+    NSData *myPdfData;
+    while (documentsSubpath = [direnum nextObject])
+    {
+        if (![documentsSubpath.lastPathComponent isEqual:searchFilename]) {
+            continue;
+        }
+        NSLog(@"found %@", documentsSubpath);
+        NSString *pdfFileName = [documentsDirectory stringByAppendingPathComponent:searchFilename];
+        NSLog(@"t %@", pdfFileName);
+        myPdfData = [NSData dataWithContentsOfFile:pdfFileName];
+    }
+    
+    return myPdfData;
+}
+
+- (void)setupPDFDocumentNamed:(NSString*)name Width:(float)width Height:(float)height
+{
+    _pageSize = CGSizeMake(width, height);
+    NSString *pdfName = @"Demo.pdf";
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *pdfFileName = [documentsDirectory stringByAppendingPathComponent:pdfName];
+    
+    UIGraphicsBeginPDFContextToFile(pdfFileName, CGRectZero, nil);
+    
+    _pageSize = CGSizeMake(width, height);
+    
+}
+
+- (void)beginPDFPage {
+    UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, _pageSize.width, _pageSize.height), nil);
+}
+
+-(void)addDataToPDF:(NSMutableArray*)data
+{
+    
+    NSString	*justFileName;
+    UIImage		*pngImage;
+    NSInteger	currentPage = 0;
+    
+    for (id file in data)
+    {
+        // Mark the beginning of a new page.
+        [self beginPDFPage];
+        
+        if (currentPage==0) {
+            
+            justFileName = [[file lastPathComponent] stringByDeletingPathExtension];
+            
+            NSString *imagePath = [[NSBundle mainBundle] pathForResource:justFileName ofType:@"jpg"];
+            
+            UIImage *pngImage = [UIImage imageWithContentsOfFile:imagePath];
+            [pngImage drawInRect:CGRectMake(0, 0, _pageSize.width, _pageSize.height)];
+            
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            CGAffineTransform ctm = CGContextGetCTM(context);
+            
+            // Translate the origin to the bottom left.
+            // Notice that 842 is the size of the PDF page.
+            CGAffineTransformTranslate(ctm, 0.0, 850);
+            
+            // Flip the handedness of the coordinate system back to right handed.
+            CGAffineTransformScale(ctm, 1.0, -1.0);
+            
+            // Convert the update rectangle to the new coordiante system.
+            //			CGRect xformRect = CGRectApplyAffineTransform(CGRectMake(50, 750, 300, 100), ctm);
+            
+            // add custom name to pdf
+            //			if ([_uitf_name.text length] == 0) {
+            //				greetingName = @" ";
+            //			} else {
+            //				greetingName = _uitf_name.text;
+            //			}
+            
+            //			NSString *url = [NSString stringWithFormat:@"Prepared for %@", greetingName];
+            //			UIGraphicsSetPDFContextDestinationForRect(url, xformRect );
+            //
+            //			CGContextSaveGState(context);
+            //			NSDictionary *attributesDict;
+            //			NSMutableAttributedString *attString;
+            //
+            //			NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+            //			[style setAlignment:NSTextAlignmentCenter];
+            //
+            //			attributesDict = @{NSForegroundColorAttributeName : [UIColor whiteColor],NSParagraphStyleAttributeName : style};
+            //			attString = [[NSMutableAttributedString alloc] initWithString:url attributes:attributesDict];
+            //
+            //			[attString drawInRect:CGRectMake(270, 50, 300, 100)];
+            //
+            //			CGContextRestoreGState(context);
+            
+        } else {
+            
+            justFileName = [[file lastPathComponent] stringByDeletingPathExtension];
+            
+            NSString *imagePath = [[NSBundle mainBundle] pathForResource:justFileName ofType:@"jpg"];
+            
+            pngImage = [UIImage imageWithImage:[UIImage imageWithContentsOfFile:imagePath] scaledToWidth:_pageSize.width];
+            [pngImage drawInRect:CGRectMake(0, 0, pngImage.size.width, pngImage.size.height)];
+            
+        }
+        
+        NSData *imgData = UIImageJPEGRepresentation(pngImage, 0);
+        //NSLog(@"Size of Image(bytes):%lu",(unsigned long)[imgData length]);
+        
+        //NSLog(@"%@",[NSByteCountFormatter stringFromByteCount:imgData.length countStyle:NSByteCountFormatterCountStyleFile]);
+        
+        NSString *string = [NSByteCountFormatter stringFromByteCount:[imgData length] countStyle:NSByteCountFormatterCountStyleFile];
+        
+        [filesInPDF addObject:[NSNumber numberWithFloat:[string floatValue]]];
+        
+        //[totalBytesString appendString:string];
+//        NSLog(@"%@", totalBytesString);
+        
+        currentPage++;
+        //		[self drawPDFPageNumber:currentPage];
+    }
+    
+    CGFloat i;
+    for (int g = 0; g< [filesInPDF count]; g++) {
+        i += [filesInPDF[g] floatValue];
+    }
+    
+//    [totalBytesString appendString:[NSByteCountFormatter stringFromByteCount:i countStyle:NSByteCountFormatterCountStyleFile]];
+//    NSLog(@"%@", totalBytesString);
+    
+    
+    // link added to end pdf
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGAffineTransform ctm = CGContextGetCTM(context);
+    
+    // Translate the origin to the bottom left.
+    // Notice that 850 is the size of the PDF page.
+    CGAffineTransformTranslate(ctm, 0.0, 850);
+    
+    // Flip the handedness of the coordinate system back to right handed.
+    CGAffineTransformScale(ctm, 1.0, -1.0);
+    
+}
+
+- (void)drawPDFPageNumber:(NSInteger)pageNum
+{
+    NSString *pageString = [NSString stringWithFormat:@"Page %li", (long)pageNum];
+    UIFont *theFont = [UIFont systemFontOfSize:12];
+    CGSize maxSize = CGSizeMake(612, 72);
+    CGRect textRect = [pageString boundingRectWithSize:maxSize
+                                               options:NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:@{NSFontAttributeName:theFont}
+                                               context:nil];
+    
+    CGSize pageStringSize = textRect.size;
+    
+    CGRect stringRect = CGRectMake(40.0,
+                                   790 + ((72.0 - pageStringSize.height) / 2.0),
+                                   pageStringSize.width,
+                                   pageStringSize.height);
+    
+    NSDictionary *attributesDict;
+    NSMutableAttributedString *attString;
+    
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setAlignment:NSTextAlignmentCenter];
+    
+    attributesDict = @{NSForegroundColorAttributeName : [UIColor whiteColor],NSParagraphStyleAttributeName : style};
+    attString = [[NSMutableAttributedString alloc] initWithString:pageString attributes:attributesDict];
+    
+    [attString drawInRect:stringRect];
+}
+
+- (void)finishAndSavePDF {
+    UIGraphicsEndPDFContext();
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *pdfDirectoryString = [NSString stringWithFormat:@"%@/Demo.pdf", documentsDirectory];
+    
+    NSData *pdfData = [NSData dataWithContentsOfFile:pdfDirectoryString];
+    NSError *error = nil;
+    if ([pdfData writeToFile:pdfDirectoryString options:NSDataWritingAtomic error:&error]) {
+        // file saved
+    } else {
+        // error writing file
+        NSLog(@"Unable to write PDF to %@. Error: %@", pdfDirectoryString,[error localizedDescription]);
+    }
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
