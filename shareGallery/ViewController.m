@@ -11,8 +11,9 @@
 #import "XHGalleryViewController.h"
 #import "embEmailData.h"
 #import <MessageUI/MessageUI.h>
+#import "SmallAlbumCollectionViewController.h"
 
-@interface ViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, XHGalleryDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
+@interface ViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, XHGalleryDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate, UIPopoverControllerDelegate>
 {
     NSArray             *arr_rawData;
     CGRect              viewFrame;
@@ -22,9 +23,11 @@
     MFMailComposeViewController *picker;
     UIView              *uiv_shareControlContainer;
 }
-@property (nonatomic, strong)   XHGalleryViewController *gallery;
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UIButton *uib_share;
+@property (nonatomic, strong)   XHGalleryViewController             *gallery;
+@property (weak, nonatomic) IBOutlet UICollectionView               *collectionView;
+@property (weak, nonatomic) IBOutlet UIButton                       *uib_share;
+@property (nonatomic, strong) SmallAlbumCollectionViewController    *smallAlbum;
+@property (nonatomic, strong) UIPopoverController                   *smallAlbumPopover;
 @end
 
 @implementation ViewController
@@ -129,7 +132,7 @@
 {
     NSString *url = [[NSBundle mainBundle] pathForResource:@"photoData" ofType:@"plist"];
     arr_rawData = [[NSArray alloc] initWithContentsOfFile:url];
-    NSLog(@"the photos are %@", arr_rawData);
+//    NSLog(@"the photos are %@", arr_rawData);
 }
 
 /*
@@ -195,6 +198,12 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    UICollectionViewLayoutAttributes *attributes = [collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    CGRect cellRect = attributes.frame;
+    CGRect frame = [collectionView convertRect:cellRect toView:self.view];
+    NSLog(@"The selected cell is %@", NSStringFromCGRect(frame));
+    
+    
     if (enabledShare) {
         // Get the selected string
 //        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
@@ -205,9 +214,20 @@
     }
     else
     {
-        [self createGallery:0];
-        [self addChildViewController:_gallery];
-        [self.view addSubview: _gallery.view];
+        if (_smallAlbum == nil) {
+            UICollectionViewFlowLayout *aFlowLayout = [[UICollectionViewFlowLayout alloc] init];
+            [aFlowLayout setItemSize:CGSizeMake(50, 50)];
+            [aFlowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+            _smallAlbum = [[SmallAlbumCollectionViewController alloc]initWithCollectionViewLayout:aFlowLayout];
+        }
+        
+        _smallAlbumPopover = [[UIPopoverController alloc] initWithContentViewController:_smallAlbum];
+        [_smallAlbumPopover presentPopoverFromRect:frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        _smallAlbumPopover.delegate = self;
+        
+//        [self createGallery:0];
+//        [self addChildViewController:_gallery];
+//        [self.view addSubview: _gallery.view];
     }
 }
 
@@ -220,6 +240,14 @@
         [arr_selectedCells removeObject: theNum];
     }
     
+}
+
+#pragma mark PopOver Delegate
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    NSLog(@"Should get data back from small album");
+    [arr_selectedCells addObjectsFromArray:[_smallAlbum getSelectedItem]];
+    NSLog(@"%@", arr_selectedCells);
 }
 
 #pragma mark Email Selected Array after formatting
