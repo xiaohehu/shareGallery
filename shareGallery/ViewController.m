@@ -205,29 +205,33 @@
     
     
     if (enabledShare) {
-        // Get the selected string
-//        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
-        NSString *theNum = @"Lobby View.jpg";
-        // Add the selected item to the array
-        [arr_selectedCells addObject: theNum];
-        NSLog(@"\n\n %@", arr_selectedCells);
+        
+        if (indexPath.item > 0) {
+            // Get the selected string
+            //        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
+            NSString *theNum = @"Lobby View.jpg";
+            // Add the selected item to the array
+            [arr_selectedCells addObject: theNum];
+        }
+        else {
+            if (_smallAlbum == nil) {
+                UICollectionViewFlowLayout *aFlowLayout = [[UICollectionViewFlowLayout alloc] init];
+                [aFlowLayout setItemSize:CGSizeMake(50, 50)];
+                [aFlowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+                _smallAlbum = [[SmallAlbumCollectionViewController alloc]initWithCollectionViewLayout:aFlowLayout];
+            }
+            
+            _smallAlbumPopover = [[UIPopoverController alloc] initWithContentViewController:_smallAlbum];
+            [_smallAlbumPopover presentPopoverFromRect:frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+            _smallAlbumPopover.delegate = self;
+        }
     }
     else
     {
-        if (_smallAlbum == nil) {
-            UICollectionViewFlowLayout *aFlowLayout = [[UICollectionViewFlowLayout alloc] init];
-            [aFlowLayout setItemSize:CGSizeMake(50, 50)];
-            [aFlowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
-            _smallAlbum = [[SmallAlbumCollectionViewController alloc]initWithCollectionViewLayout:aFlowLayout];
-        }
+        [self createGallery:0];
+        [self addChildViewController:_gallery];
+        [self.view addSubview: _gallery.view];
         
-        _smallAlbumPopover = [[UIPopoverController alloc] initWithContentViewController:_smallAlbum];
-        [_smallAlbumPopover presentPopoverFromRect:frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        _smallAlbumPopover.delegate = self;
-        
-//        [self createGallery:0];
-//        [self addChildViewController:_gallery];
-//        [self.view addSubview: _gallery.view];
     }
 }
 
@@ -248,6 +252,10 @@
     NSLog(@"Should get data back from small album");
     [arr_selectedCells addObjectsFromArray:[_smallAlbum getSelectedItem]];
     NSLog(@"%@", arr_selectedCells);
+    _smallAlbumPopover = nil;
+    [_smallAlbum.view removeFromSuperview];
+    [_smallAlbum removeFromParentViewController];
+    _smallAlbum = nil;
 }
 
 #pragma mark Email Selected Array after formatting
