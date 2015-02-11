@@ -34,6 +34,14 @@
     
     CGSize				_pageSize;
     NSMutableArray		*filesInPDF;
+    NSMutableArray		*bytesInPDF;
+    NSMutableArray      *selectedBytes;
+    UILabel             *uil_size;
+    UILabel             *uil_10mb;
+    UIView              *upperRect;
+    UIView              *lowerRect;
+    CGFloat             totalBhytes;
+    NSNumber            *byt;
 }
 @property (nonatomic, strong)       XHGalleryViewController                 *gallery;
 @property (weak, nonatomic)         IBOutlet UICollectionView               *collectionView;
@@ -71,8 +79,93 @@
 
 - (void)initData
 {
-    filesInPDF = [[NSMutableArray alloc] init];
-    arr_selectedCells = [NSMutableArray array];
+    filesInPDF          = [[NSMutableArray alloc] init];
+    bytesInPDF          = [[NSMutableArray alloc] init];
+    arr_selectedCells   = [[NSMutableArray array] init];
+    selectedBytes       = [[NSMutableArray alloc] init];
+    
+    upperRect           = [[UIView alloc] init];
+    lowerRect           = [[UIView alloc] init];
+}
+
+#pragma mark - Bytes
+
+-(void)updateProgress
+{
+    float percentDone = 0;
+    UIColor *spaceleft = [UIColor yellowColor];
+    if ((totalBhytes/1000 > 500) && (totalBhytes/1000 < 2500)) {
+        percentDone = .20;
+    } else if ((totalBhytes/1000 > 2500) && (totalBhytes/1000 < 5000)) {
+        percentDone = .40;
+    } else if ((totalBhytes/1000 > 5000) && (totalBhytes/1000 < 7500)) {
+        percentDone = .60;
+    } else if ((totalBhytes/1000 > 7500) && (totalBhytes/1000 < 10000)) {
+        percentDone = .80;
+        spaceleft = [UIColor redColor];
+    } else if ((totalBhytes/1000 > 10000)) {
+        spaceleft = [UIColor redColor];
+        percentDone = 1;
+    }
+    
+    NSLog(@"percentDone: %f",percentDone);
+    
+    CGRect rect = CGRectMake(260, 70, 150, 5);
+    
+    upperRect.frame = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width * percentDone, rect.size.height );
+    
+    lowerRect.frame = CGRectMake(rect.origin.x + (rect.size.width * percentDone), rect.origin.y, rect.size.width*(1-percentDone), rect.size.height );
+    lowerRect.alpha = 0.7;
+    upperRect.alpha = 0.7;
+    
+    [upperRect setBackgroundColor:spaceleft];
+    [lowerRect setBackgroundColor:[UIColor greenColor]];
+    
+    [uiv_shareControlContainer insertSubview:upperRect atIndex:1];
+    [uiv_shareControlContainer insertSubview:lowerRect atIndex:1];
+    
+    NSString *sttring = [NSByteCountFormatter stringFromByteCount:totalBhytes countStyle:NSByteCountFormatterCountStyleFile];
+    
+    uil_size.text = [NSString stringWithFormat:@"Size: %@",sttring];
+}
+
+-(CGFloat)byteSizeOfFile:(NSString *)linkText
+{
+    NSData			*imgData;
+    UIImage			*pngImage;
+    
+    // if cell == existing documents, calculate that size
+    if ([linkText isEqualToString:@"Floorplans.pdf"]) {
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:linkText ofType:nil];
+        imgData = [NSData dataWithContentsOfFile:imagePath];
+    } else {
+        NSString *justFileName = [[linkText lastPathComponent] stringByDeletingPathExtension];
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:justFileName ofType:@"jpg"];
+        pngImage = [UIImage imageWithImage:[UIImage imageWithContentsOfFile:imagePath] scaledToWidth:1100];
+        UIImage *t = [UIImage imageWithContentsOfFile:imagePath];
+        imgData = UIImagePNGRepresentation(t);
+    }
+    
+    CGFloat bytesString = [imgData length];
+    
+    return bytesString;
+}
+
+-(void)updateTotalBytes
+{
+    if (bytesInPDF) {
+        [bytesInPDF removeAllObjects];
+        totalBhytes=0;
+    }
+    
+    [bytesInPDF addObjectsFromArray:selectedBytes];
+    NSLog(@"\n\n %@", bytesInPDF);
+    for (NSNumber *t in bytesInPDF) {
+        totalBhytes = totalBhytes+[t intValue];
+    }
+    
+    [self updateProgress];
+//    NSLog(@"totalBhytes %f",totalBhytes/1000);
 }
 
 //----------------------------------------------------
@@ -117,6 +210,20 @@
     [uib_pdf setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [uiv_shareControlContainer addSubview: uib_pdf];
     [uib_pdf addTarget:self action:@selector(emailData:) forControlEvents:UIControlEventTouchUpInside];
+    
+    uil_size = [[UILabel alloc] initWithFrame:CGRectMake(160, 60, 150, 20)];
+    uil_size.text = @"Size: ";
+    [uil_size setFont:[UIFont systemFontOfSize:15]];
+    uil_size.textColor = [UIColor blackColor];
+    uil_size.textAlignment = NSTextAlignmentLeft;
+    [uiv_shareControlContainer addSubview: uil_size];
+    
+    uil_10mb = [[UILabel alloc] initWithFrame:CGRectMake(350, 60.0, 150, 20)];
+    [uiv_shareControlContainer addSubview: uil_10mb];
+    uil_10mb.text = @"10MBs";
+    uil_10mb.textColor =[UIColor blackColor];
+    uil_10mb.textAlignment = NSTextAlignmentRight;
+    uil_10mb.font = [UIFont systemFontOfSize:15];
 }
 
 - (void)tapDoneBtn:(id)sender
@@ -226,6 +333,9 @@
             NSString *theNum = @"Lobby View.jpg";
             // Add the selected item to the array
             [arr_selectedCells addObject: theNum];
+            byt = [NSNumber numberWithFloat:[self byteSizeOfFile:theNum]];
+            [selectedBytes addObject:byt];
+            [self updateTotalBytes];
         }
         else {
             if (_smallAlbum == nil) {
@@ -239,6 +349,7 @@
             [_smallAlbumPopover presentPopoverFromRect:frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
             _smallAlbumPopover.delegate = self;
         }
+
     }
     else
     {
