@@ -26,6 +26,7 @@ static NSString * const reuseIdentifier = @"Cell";
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     self.collectionView.backgroundColor = [UIColor whiteColor];
     _arr_selectedItem = [[NSMutableArray alloc] init];
+    self.collectionView.allowsMultipleSelection = YES;
     // Do any additional setup after loading the view.
 }
 
@@ -64,6 +65,9 @@ static NSString * const reuseIdentifier = @"Cell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     cell.backgroundColor = [UIColor greenColor];
+    UIView *selectedView = [[UIView alloc] initWithFrame:cell.bounds];
+    selectedView.backgroundColor = [UIColor orangeColor];
+    cell.selectedBackgroundView = selectedView;
     // Configure the cell
     
     return cell;
@@ -72,6 +76,11 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [_arr_selectedItem addObject:@"Lobby View.jpg"];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [_arr_selectedItem removeLastObject];
 }
 
 - (NSArray *)getSelectedItem

@@ -14,24 +14,32 @@
 #import "SmallAlbumCollectionViewController.h"
 #import "UIImage+ScaleToFit.h"
 
-@interface ViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, XHGalleryDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate, UIPopoverControllerDelegate>
+@interface ViewController ()
+<
+    UICollectionViewDelegate,
+    UICollectionViewDataSource,
+    XHGalleryDelegate,
+    MFMessageComposeViewControllerDelegate,
+    MFMailComposeViewControllerDelegate,
+    UIPopoverControllerDelegate
+>
+
 {
     NSArray             *arr_rawData;
     CGRect              viewFrame;
-    NSMutableArray      *arr_data;
     NSMutableArray      *arr_selectedCells;
     BOOL                enabledShare;
-    MFMailComposeViewController *picker;
+    BOOL                creatPDF;
     UIView              *uiv_shareControlContainer;
     
     CGSize				_pageSize;
     NSMutableArray		*filesInPDF;
 }
-@property (nonatomic, strong)   XHGalleryViewController             *gallery;
-@property (weak, nonatomic) IBOutlet UICollectionView               *collectionView;
-@property (weak, nonatomic) IBOutlet UIButton                       *uib_share;
-@property (nonatomic, strong) SmallAlbumCollectionViewController    *smallAlbum;
-@property (nonatomic, strong) UIPopoverController                   *smallAlbumPopover;
+@property (nonatomic, strong)       XHGalleryViewController                 *gallery;
+@property (weak, nonatomic)         IBOutlet UICollectionView               *collectionView;
+@property (weak, nonatomic)         IBOutlet UIButton                       *uib_share;
+@property (nonatomic, strong)       SmallAlbumCollectionViewController      *smallAlbum;
+@property (nonatomic, strong)       UIPopoverController                     *smallAlbumPopover;
 @end
 
 @implementation ViewController
@@ -43,9 +51,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
-    picker = [[MFMailComposeViewController alloc] init];
-    filesInPDF = [[NSMutableArray alloc] init];
     
     [self initData];
     
@@ -66,16 +71,16 @@
 
 - (void)initData
 {
-    arr_data = [NSMutableArray array];
-    for (int i = 0 ; i < 32; i++) {
-        [arr_data addObject: [NSString stringWithFormat:@"%i", i]];
-    }
+    filesInPDF = [[NSMutableArray alloc] init];
     arr_selectedCells = [NSMutableArray array];
 }
 
+//----------------------------------------------------
+#pragma mark - Share control Panel setting and action
+//----------------------------------------------------
+
 - (void)initShareControlPanel
 {
-//    uiv_shareControlContainer = [UIView new];
     uiv_shareControlContainer = [[UIView alloc] initWithFrame:CGRectMake(0.0, self.view.bounds.size.height - 100, self.view.bounds.size.width, 100)];
     uiv_shareControlContainer.backgroundColor = [UIColor grayColor];
     [self.view addSubview: uiv_shareControlContainer];
@@ -97,19 +102,21 @@
     
     UIButton *uib_email = [UIButton buttonWithType:UIButtonTypeCustom];
     uib_email.frame = CGRectMake(20.0, 10.0, 100.0, 30.0);
+    uib_email.tag = 10;
     [uib_email setTitle:@"Eamil" forState:UIControlStateNormal];
     uib_email.backgroundColor = [UIColor whiteColor];
     [uib_email setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [uiv_shareControlContainer addSubview: uib_email];
-    [uib_email addTarget:self action:@selector(emailData) forControlEvents:UIControlEventTouchUpInside];
+    [uib_email addTarget:self action:@selector(emailData:) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton *uib_pdf = [UIButton buttonWithType:UIButtonTypeCustom];
     uib_pdf.frame = CGRectMake(20.0, 60.0, 100.0, 30.0);
+    uib_pdf.tag = 11;
     [uib_pdf setTitle:@"PDF" forState:UIControlStateNormal];
     uib_pdf.backgroundColor = [UIColor whiteColor];
     [uib_pdf setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [uiv_shareControlContainer addSubview: uib_pdf];
-    [uib_pdf addTarget:self action:@selector(createPdfAttachment:) forControlEvents:UIControlEventTouchUpInside];
+    [uib_pdf addTarget:self action:@selector(emailData:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)tapDoneBtn:(id)sender
@@ -118,6 +125,7 @@
         uiv_shareControlContainer.transform = CGAffineTransformMakeTranslation(0.0, uiv_shareControlContainer.frame.size.height);
     }];
     _uib_share.enabled = YES;
+    enabledShare = NO;
     _collectionView.allowsMultipleSelection = NO;
     [_collectionView reloadData];
 }
@@ -132,6 +140,9 @@
     }];
 }
 
+//----------------------------------------------------
+#pragma mark - Init Gallery
+//----------------------------------------------------
 - (void)prepareGalleryData
 {
     NSString *url = [[NSBundle mainBundle] pathForResource:@"photoData" ofType:@"plist"];
@@ -172,8 +183,9 @@
                      }];
 }
 
+//----------------------------------------------------
 #pragma mark - Collection Delegate Methods
-
+//----------------------------------------------------
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return 32;
@@ -196,7 +208,6 @@
     UIView *selectedView = [[UIView alloc] initWithFrame:galleryImageCell.bounds];
     selectedView.backgroundColor = [UIColor blueColor];
     galleryImageCell.selectedBackgroundView = selectedView;
-//    [galleryImageCell.cellContent setText:@"test"];
     return galleryImageCell;
 }
 
@@ -209,10 +220,9 @@
     
     
     if (enabledShare) {
-        
+        // First item of gallery is an album
         if (indexPath.item > 0) {
             // Get the selected string
-            //        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
             NSString *theNum = @"Lobby View.jpg";
             // Add the selected item to the array
             [arr_selectedCells addObject: theNum];
@@ -242,41 +252,35 @@
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (enabledShare) {
-        // Get the selected string
-        NSString *theNum = [arr_data objectAtIndex:indexPath.item];
-        // Remove the selected item to the array
-        [arr_selectedCells removeObject: theNum];
+        [arr_selectedCells removeLastObject];
     }
 }
 
-#pragma mark PopOver Delegate
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
-{
-    NSLog(@"Should get data back from small album");
-    [arr_selectedCells addObjectsFromArray:[_smallAlbum getSelectedItem]];
-    NSLog(@"%@", arr_selectedCells);
-    _smallAlbumPopover = nil;
-    [_smallAlbum.view removeFromSuperview];
-    [_smallAlbum removeFromParentViewController];
-    _smallAlbum = nil;
-}
-
+//----------------------------------------------------
 #pragma mark - Generate email
-
--(void)emailData
+//----------------------------------------------------
+-(void)emailData:(id)sender
 {
     if (arr_selectedCells.count == 0) {
         NSLog(@"\n\n Load blank email!");
         return;
     }
-    
     embEmailData *emailData = [[embEmailData alloc] init];
-    emailData.attachment = arr_selectedCells;
-    emailData.optionsAlert=NO;
+    if ([sender tag] == 11)
+    {
+        emailData.attachment = [self createPdfAttachment];
+        emailData.optionsAlert=NO;
+    }
+    else
+    {
+//        embEmailData *emailData = [[embEmailData alloc] init];
+        emailData.attachment = arr_selectedCells;
+        emailData.optionsAlert=NO;
+    }
     
     if ([MFMailComposeViewController canSendMail] == YES) {
         
-//        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
+        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
         picker.mailComposeDelegate = self; // &lt;- very important step if you want feedbacks on what the user did with your email sheet
         
         if(emailData.to)
@@ -361,18 +365,13 @@
         }
         
         picker.navigationBar.barStyle = UIBarStyleBlack; // choose your style, unfortunately, Translucent colors behave quirky.
-        [self performSelector:@selector(presentMailViewController) withObject:nil afterDelay:0.5];
+        [self presentViewController:picker animated:YES completion:nil];
         
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Status" message:[NSString stringWithFormat:@"Email needs to be configured before this device can send email. \n\n Use support@neoscape.com on a device capable of sending email."]
                                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }
-}
-
-- (void)presentMailViewController
-{
-    [self presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
@@ -403,6 +402,8 @@
             break;
     }
     [self dismissViewControllerAnimated:YES completion:nil];
+    [_collectionView reloadData];
+    [arr_selectedCells removeAllObjects];
 }
 
 -(void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
@@ -410,7 +411,24 @@
     NSLog(@"FINISHED");
 }
 
-- (void)createPdfAttachment:(id)sender
+//----------------------------------------------------
+#pragma mark - PopOver Delegate
+//----------------------------------------------------
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    NSLog(@"Should get data back from small album");
+    [arr_selectedCells addObjectsFromArray:[_smallAlbum getSelectedItem]];
+    NSLog(@"%@", arr_selectedCells);
+    _smallAlbumPopover = nil;
+    [_smallAlbum.view removeFromSuperview];
+    [_smallAlbum removeFromParentViewController];
+    _smallAlbum = nil;
+}
+
+//----------------------------------------------------
+#pragma mark - pdf creation
+//----------------------------------------------------
+- (NSArray *)createPdfAttachment
 {
     // pdf creation
     [self setupPDFDocumentNamed:@"Demo" Width:1100 Height:850];
@@ -457,51 +475,9 @@
     NSArray *attachmentData;
     [attachData addObjectsFromArray:arr_selectedCells];
     attachmentData = [NSArray arrayWithArray:attachData];
-    embEmailData *emailData = [[embEmailData alloc] init];
-    emailData.attachment = attachmentData;
-    emailData.optionsAlert=NO;
-    
-    if ([MFMailComposeViewController canSendMail] == YES) {
-        
-        //        MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
-        picker.mailComposeDelegate = self; // &lt;- very important step if you want feedbacks on what the user did with your email sheet
-        
-        if(emailData.to)
-            [picker setToRecipients:emailData.to];
-        
-        if(emailData.cc)
-            [picker setCcRecipients:emailData.cc];
-        
-        if(emailData.bcc)
-            [picker setBccRecipients:emailData.bcc];
-        
-        if(emailData.subject)
-            [picker setSubject:emailData.subject];
-        
-        if(emailData.body)
-            [picker setMessageBody:emailData.body isHTML:YES]; // depends. Mostly YES, unless you want to send it as plain text (boring)
-        
-        NSData		*myData;
-        NSString	*newname;
-        
-        for (id file in emailData.attachment) {
-            if ([file isKindOfClass:[NSData class]]) {
-                NSLog(@"pdf");
-                myData = [NSData dataWithData:file];
-                NSString *mimeType;
-                mimeType = @"application/pdf";
-                newname = @"Brochure.pdf";
-                [picker addAttachmentData:myData mimeType:mimeType fileName:newname];
-                
-                // it must be another file type?
-            }
-        }
-        
-        [self performSelector:@selector(presentMailViewController) withObject:nil afterDelay:0.5];
-    }
+    return attachmentData;
 }
 
-#pragma mark - pdf creation
 -(NSData*)getPDFAsNSDataNamed:(NSString*)name
 {
     // find new pdf and add to mydata for emailing
@@ -575,33 +551,6 @@
             // Flip the handedness of the coordinate system back to right handed.
             CGAffineTransformScale(ctm, 1.0, -1.0);
             
-            // Convert the update rectangle to the new coordiante system.
-            //			CGRect xformRect = CGRectApplyAffineTransform(CGRectMake(50, 750, 300, 100), ctm);
-            
-            // add custom name to pdf
-            //			if ([_uitf_name.text length] == 0) {
-            //				greetingName = @" ";
-            //			} else {
-            //				greetingName = _uitf_name.text;
-            //			}
-            
-            //			NSString *url = [NSString stringWithFormat:@"Prepared for %@", greetingName];
-            //			UIGraphicsSetPDFContextDestinationForRect(url, xformRect );
-            //
-            //			CGContextSaveGState(context);
-            //			NSDictionary *attributesDict;
-            //			NSMutableAttributedString *attString;
-            //
-            //			NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-            //			[style setAlignment:NSTextAlignmentCenter];
-            //
-            //			attributesDict = @{NSForegroundColorAttributeName : [UIColor whiteColor],NSParagraphStyleAttributeName : style};
-            //			attString = [[NSMutableAttributedString alloc] initWithString:url attributes:attributesDict];
-            //
-            //			[attString drawInRect:CGRectMake(270, 50, 300, 100)];
-            //
-            //			CGContextRestoreGState(context);
-            
         } else {
             
             justFileName = [[file lastPathComponent] stringByDeletingPathExtension];
@@ -614,30 +563,18 @@
         }
         
         NSData *imgData = UIImageJPEGRepresentation(pngImage, 0);
-        //NSLog(@"Size of Image(bytes):%lu",(unsigned long)[imgData length]);
-        
-        //NSLog(@"%@",[NSByteCountFormatter stringFromByteCount:imgData.length countStyle:NSByteCountFormatterCountStyleFile]);
-        
         NSString *string = [NSByteCountFormatter stringFromByteCount:[imgData length] countStyle:NSByteCountFormatterCountStyleFile];
         
         [filesInPDF addObject:[NSNumber numberWithFloat:[string floatValue]]];
         
-        //[totalBytesString appendString:string];
-//        NSLog(@"%@", totalBytesString);
-        
         currentPage++;
-        //		[self drawPDFPageNumber:currentPage];
     }
     
     CGFloat i;
     for (int g = 0; g< [filesInPDF count]; g++) {
         i += [filesInPDF[g] floatValue];
     }
-    
-//    [totalBytesString appendString:[NSByteCountFormatter stringFromByteCount:i countStyle:NSByteCountFormatterCountStyleFile]];
-//    NSLog(@"%@", totalBytesString);
-    
-    
+
     // link added to end pdf
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGAffineTransform ctm = CGContextGetCTM(context);
