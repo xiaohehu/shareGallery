@@ -529,7 +529,8 @@
 {
     NSLog(@"Should get data back from small album");
     [arr_selectedCells addObjectsFromArray:[_smallAlbum getSelectedItem]];
-    NSLog(@"%@", arr_selectedCells);
+    totalBhytes = totalBhytes + [_smallAlbum getSelectedItemSize];
+    [self updateProgress];
     _smallAlbumPopover = nil;
     [_smallAlbum.view removeFromSuperview];
     [_smallAlbum removeFromParentViewController];

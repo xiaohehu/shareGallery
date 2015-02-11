@@ -12,4 +12,5 @@
 
 
 - (NSArray *)getSelectedItem;
+- (CGFloat)getSelectedItemSize;
 @end

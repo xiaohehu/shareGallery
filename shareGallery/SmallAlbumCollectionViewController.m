@@ -7,8 +7,15 @@
 //
 
 #import "SmallAlbumCollectionViewController.h"
+#import "UIImage+ScaleToFit.h"
 
 @interface SmallAlbumCollectionViewController ()
+{
+    NSMutableArray      *selectedBytes;
+    NSNumber            *byt;
+    CGFloat             totalBhytes;
+    NSMutableArray		*bytesInPDF;
+}
 @property (nonatomic, strong) NSMutableArray        *arr_selectedItem;
 @end
 
@@ -25,7 +32,11 @@ static NSString * const reuseIdentifier = @"Cell";
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    _arr_selectedItem = [[NSMutableArray alloc] init];
+    
+    _arr_selectedItem   = [[NSMutableArray alloc] init];
+    selectedBytes       = [[NSMutableArray alloc] init];
+    bytesInPDF          = [[NSMutableArray alloc] init];
+    
     self.collectionView.allowsMultipleSelection = YES;
     // Do any additional setup after loading the view.
 }
@@ -75,7 +86,13 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [_arr_selectedItem addObject:@"Lobby View.jpg"];
+    NSString *fileName = @"Lobby View.jpg";
+    [_arr_selectedItem addObject:fileName];
+    
+    //Added image data to the byte array
+    byt = [NSNumber numberWithFloat:[self byteSizeOfFile:fileName]];
+    [selectedBytes addObject:byt];
+    [self updateTotalBytes];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -87,6 +104,47 @@ static NSString * const reuseIdentifier = @"Cell";
 {
     NSArray *arrayReturn = [NSArray arrayWithArray:_arr_selectedItem];
     return arrayReturn;
+}
+
+- (CGFloat)getSelectedItemSize
+{
+    return totalBhytes;
+}
+
+-(CGFloat)byteSizeOfFile:(NSString *)linkText
+{
+    NSData			*imgData;
+    UIImage			*pngImage;
+    
+    // if cell == existing documents, calculate that size
+    if ([linkText isEqualToString:@"Floorplans.pdf"]) {
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:linkText ofType:nil];
+        imgData = [NSData dataWithContentsOfFile:imagePath];
+    } else {
+        NSString *justFileName = [[linkText lastPathComponent] stringByDeletingPathExtension];
+        NSString *imagePath = [[NSBundle mainBundle] pathForResource:justFileName ofType:@"jpg"];
+        pngImage = [UIImage imageWithImage:[UIImage imageWithContentsOfFile:imagePath] scaledToWidth:1100];
+        UIImage *t = [UIImage imageWithContentsOfFile:imagePath];
+        imgData = UIImagePNGRepresentation(t);
+    }
+    
+    CGFloat bytesString = [imgData length];
+    
+    return bytesString;
+}
+
+-(void)updateTotalBytes
+{
+    if (bytesInPDF) {
+        [bytesInPDF removeAllObjects];
+        totalBhytes=0;
+    }
+    
+    [bytesInPDF addObjectsFromArray:selectedBytes];
+    NSLog(@"\n\n %@", bytesInPDF);
+    for (NSNumber *t in bytesInPDF) {
+        totalBhytes = totalBhytes+[t intValue];
+    }
 }
 
 #pragma mark <UICollectionViewDelegate>
