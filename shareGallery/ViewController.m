@@ -235,6 +235,11 @@
     enabledShare = NO;
     _collectionView.allowsMultipleSelection = NO;
     [_collectionView reloadData];
+    [_collectionView reloadData];
+    [arr_selectedCells removeAllObjects];
+    [bytesInPDF removeAllObjects];
+    [filesInPDF removeAllObjects];
+    [selectedBytes removeAllObjects];
 }
 
 - (IBAction)shareBtnTapped:(id)sender {
@@ -515,6 +520,9 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     [_collectionView reloadData];
     [arr_selectedCells removeAllObjects];
+    [bytesInPDF removeAllObjects];
+    [filesInPDF removeAllObjects];
+    [selectedBytes removeAllObjects];
 }
 
 -(void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result

@@ -141,10 +141,20 @@ static NSString * const reuseIdentifier = @"Cell";
     }
     
     [bytesInPDF addObjectsFromArray:selectedBytes];
-    NSLog(@"\n\n %@", bytesInPDF);
+//    NSLog(@"\n\n %@", bytesInPDF);
     for (NSNumber *t in bytesInPDF) {
         totalBhytes = totalBhytes+[t intValue];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [selectedBytes removeAllObjects];
+    selectedBytes = nil;
+    [bytesInPDF removeAllObjects];
+    bytesInPDF = nil;
+    [_arr_selectedItem removeAllObjects];
+    _arr_selectedItem = nil;
 }
 
 #pragma mark <UICollectionViewDelegate>
